@@ -5,6 +5,7 @@ import java.awt.*;
 
 import modelo.Persona;
 import modelo.Rol;
+import modelo.Requerimiento;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +16,12 @@ public class MainFrame {
     private JTextArea txtResultado;
 
     private List<Persona> personas;
+    private List<Requerimiento> requerimientos;
 
     public MainFrame() {
 
         personas = new ArrayList<>();
+        requerimientos = new ArrayList<>();
 
         initialize();
     }
@@ -45,6 +48,10 @@ public class MainFrame {
 
         JButton btnRequerimiento =
                 new JButton("Agregar Requerimiento");
+
+        btnRequerimiento.addActionListener(
+                e -> agregarRequerimiento()
+        );
 
         JButton btnResolver =
                 new JButton("Buscar Equipo");
@@ -135,6 +142,66 @@ public class MainFrame {
         txtResultado.append(
                 "Persona agregada: "
                         + persona
+                        + "\n"
+        );
+    }
+
+    private void agregarRequerimiento() {
+
+        Rol rol = (Rol) JOptionPane.showInputDialog(
+                frame,
+                "Rol:",
+                "Seleccionar Rol",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                Rol.values(),
+                Rol.LIDER
+        );
+
+        if (rol == null) {
+            return;
+        }
+
+        String textoCantidad =
+                JOptionPane.showInputDialog(
+                        frame,
+                        "Cantidad requerida:"
+                );
+
+        if (textoCantidad == null) {
+            return;
+        }
+
+        int cantidad;
+
+        try {
+
+            cantidad =
+                    Integer.parseInt(textoCantidad);
+
+        } catch (NumberFormatException e) {
+
+            JOptionPane.showMessageDialog(
+                    frame,
+                    "Debe ingresar un número."
+            );
+
+            return;
+        }
+
+        Requerimiento requerimiento =
+                new Requerimiento(
+                        rol,
+                        cantidad
+                );
+
+        requerimientos.add(requerimiento);
+
+        txtResultado.append(
+                "Requerimiento agregado: "
+                        + rol
+                        + " -> "
+                        + cantidad
                         + "\n"
         );
     }
