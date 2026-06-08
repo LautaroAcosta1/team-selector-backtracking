@@ -2,6 +2,7 @@ package ui;
 
 import modelo.*;
 import servicio.SelectorEquipo;
+import servicio.BusquedaThread;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,12 +81,24 @@ public class Main {
         SelectorEquipo selector =
                 new SelectorEquipo();
 
-        Equipo equipo =
-                selector.resolver(
+        BusquedaThread hilo =
+                new BusquedaThread(
+                        selector,
                         personas,
                         incompatibilidades,
                         requerimientos
                 );
+
+        hilo.start();
+
+        try {
+            hilo.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        Equipo equipo =
+                hilo.getResultado();
 
         System.out.println(
                 "EQUIPO SELECCIONADO"
