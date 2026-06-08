@@ -30,7 +30,8 @@ public class Persona {
     @Override
     public String toString() {
         return nombre +
-                " (" + rol +
-                ", " + calificacion + ")";
+                " (" +
+                rol +
+                ")";
     }
 }
