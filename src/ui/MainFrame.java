@@ -76,6 +76,31 @@ public class MainFrame {
         panelBotones.add(btnRequerimiento);
         panelBotones.add(btnResolver);
 
+        JButton btnVerPersonas =
+                new JButton("Ver Personas");
+
+        btnVerPersonas.addActionListener(
+                e -> verPersonas()
+        );
+
+        JButton btnVerIncompatibilidades =
+                new JButton("Ver Incompatibilidades");
+
+        btnVerIncompatibilidades.addActionListener(
+                e -> verIncompatibilidades()
+        );
+
+        JButton btnVerRequerimientos =
+                new JButton("Ver Requerimientos");
+
+        btnVerRequerimientos.addActionListener(
+                e -> verRequerimientos()
+        );
+
+        panelBotones.add(btnVerPersonas);
+        panelBotones.add(btnVerIncompatibilidades);
+        panelBotones.add(btnVerRequerimientos);
+
         frame.add(panelBotones, BorderLayout.NORTH);
 
         txtResultado = new JTextArea();
@@ -135,6 +160,16 @@ public class MainFrame {
             calificacion =
                     Integer.parseInt(textoCalificacion);
 
+            if (calificacion < 1 || calificacion > 5) {
+
+                JOptionPane.showMessageDialog(
+                        frame,
+                        "La calificación debe estar entre 1 y 5."
+                );
+
+                return;
+            }
+
         } catch (NumberFormatException e) {
 
             JOptionPane.showMessageDialog(
@@ -193,6 +228,16 @@ public class MainFrame {
 
             cantidad =
                     Integer.parseInt(textoCantidad);
+
+            if (cantidad <= 0) {
+
+                JOptionPane.showMessageDialog(
+                        frame,
+                        "La cantidad debe ser mayor a cero."
+                );
+
+                return;
+            }
 
         } catch (NumberFormatException e) {
 
@@ -291,6 +336,8 @@ public class MainFrame {
 
     private void buscarEquipo() {
 
+        txtResultado.setText("");
+
         SelectorEquipo selector =
                 new SelectorEquipo();
 
@@ -361,6 +408,62 @@ public class MainFrame {
                 "\nPUNTAJE TOTAL: "
                         + equipo.getPuntajeTotal()
                         + "\n\n"
+        );
+    }
+
+    private void verPersonas() {
+
+        StringBuilder sb = new StringBuilder();
+
+        for (Persona p : personas) {
+            sb.append(p).append("\n");
+        }
+
+        JOptionPane.showMessageDialog(
+                frame,
+                sb.toString(),
+                "Personas",
+                JOptionPane.INFORMATION_MESSAGE
+        );
+    }
+
+    private void verIncompatibilidades() {
+
+        StringBuilder sb = new StringBuilder();
+
+        for (Incompatibilidad i : incompatibilidades) {
+
+            sb.append(i.getPersona1().getNombre())
+                    .append(" <-> ")
+                    .append(i.getPersona2().getNombre())
+                    .append("\n");
+        }
+
+        JOptionPane.showMessageDialog(
+                frame,
+                sb.toString(),
+                "Incompatibilidades",
+                JOptionPane.INFORMATION_MESSAGE
+        );
+    }
+
+    private void verRequerimientos() {
+
+        StringBuilder sb = new StringBuilder();
+
+        for (Requerimiento r : requerimientos) {
+
+            sb.append(r.getRol())
+                    .append(" -> ")
+                    .append(r.getCantidad())
+                    .append("\n");
+        }
+
+        JOptionPane.showMessageDialog(
+                frame,
+                sb.toString(),
+                "Requerimientos",
+                JOptionPane.INFORMATION_MESSAGE
         );
     }
 }
