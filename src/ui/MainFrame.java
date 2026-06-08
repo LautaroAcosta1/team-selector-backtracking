@@ -8,6 +8,10 @@ import modelo.Rol;
 import modelo.Requerimiento;
 import modelo.Incompatibilidad;
 
+import modelo.Equipo;
+import servicio.BusquedaThread;
+import servicio.SelectorEquipo;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,6 +66,10 @@ public class MainFrame {
 
         JButton btnResolver =
                 new JButton("Buscar Equipo");
+
+        btnResolver.addActionListener(
+                e -> buscarEquipo()
+        );
 
         panelBotones.add(btnPersona);
         panelBotones.add(btnIncompatibilidad);
@@ -278,6 +286,81 @@ public class MainFrame {
                         + " <-> "
                         + persona2.getNombre()
                         + "\n"
+        );
+    }
+
+    private void buscarEquipo() {
+
+        SelectorEquipo selector =
+                new SelectorEquipo();
+
+        BusquedaThread hilo =
+                new BusquedaThread(
+                        selector,
+                        personas,
+                        incompatibilidades,
+                        requerimientos
+                );
+
+        hilo.start();
+
+        try {
+
+            hilo.join();
+
+        } catch (InterruptedException e) {
+
+            JOptionPane.showMessageDialog(
+                    frame,
+                    "Error al ejecutar la búsqueda."
+            );
+
+            return;
+        }
+
+        Equipo equipo =
+                hilo.getResultado();
+
+        if (equipo == null) {
+
+            JOptionPane.showMessageDialog(
+                    frame,
+                    "No existe una solución válida."
+            );
+
+            return;
+        }
+
+        mostrarEquipo(equipo);
+    }
+
+    private void mostrarEquipo(Equipo equipo) {
+
+        txtResultado.append(
+                "\n====================\n"
+        );
+
+        txtResultado.append(
+                "EQUIPO ENCONTRADO\n"
+        );
+
+        txtResultado.append(
+                "====================\n"
+        );
+
+        for (Persona p :
+                equipo.getIntegrantes()) {
+
+            txtResultado.append(
+                    p.toString()
+                            + "\n"
+            );
+        }
+
+        txtResultado.append(
+                "\nPUNTAJE TOTAL: "
+                        + equipo.getPuntajeTotal()
+                        + "\n\n"
         );
     }
 }
