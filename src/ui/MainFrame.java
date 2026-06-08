@@ -6,6 +6,7 @@ import java.awt.*;
 import modelo.Persona;
 import modelo.Rol;
 import modelo.Requerimiento;
+import modelo.Incompatibilidad;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,11 +18,13 @@ public class MainFrame {
 
     private List<Persona> personas;
     private List<Requerimiento> requerimientos;
+    private List<Incompatibilidad> incompatibilidades;
 
     public MainFrame() {
 
         personas = new ArrayList<>();
         requerimientos = new ArrayList<>();
+        incompatibilidades = new ArrayList<>();
 
         initialize();
     }
@@ -45,6 +48,10 @@ public class MainFrame {
 
         JButton btnIncompatibilidad =
                 new JButton("Agregar Incompatibilidad");
+
+        btnIncompatibilidad.addActionListener(
+                e -> agregarIncompatibilidad()
+        );
 
         JButton btnRequerimiento =
                 new JButton("Agregar Requerimiento");
@@ -202,6 +209,74 @@ public class MainFrame {
                         + rol
                         + " -> "
                         + cantidad
+                        + "\n"
+        );
+    }
+
+    private void agregarIncompatibilidad() {
+
+        if (personas.size() < 2) {
+
+            JOptionPane.showMessageDialog(
+                    frame,
+                    "Debe haber al menos 2 personas."
+            );
+
+            return;
+        }
+
+        Persona persona1 = (Persona)
+                JOptionPane.showInputDialog(
+                        frame,
+                        "Primera persona:",
+                        "Seleccionar",
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        personas.toArray(),
+                        personas.get(0)
+                );
+
+        if (persona1 == null) {
+            return;
+        }
+
+        Persona persona2 = (Persona)
+                JOptionPane.showInputDialog(
+                        frame,
+                        "Segunda persona:",
+                        "Seleccionar",
+                        JOptionPane.QUESTION_MESSAGE,
+                        null,
+                        personas.toArray(),
+                        personas.get(0)
+                );
+
+        if (persona2 == null) {
+            return;
+        }
+
+        if (persona1.equals(persona2)) {
+
+            JOptionPane.showMessageDialog(
+                    frame,
+                    "No puede elegir la misma persona."
+            );
+
+            return;
+        }
+
+        incompatibilidades.add(
+                new Incompatibilidad(
+                        persona1,
+                        persona2
+                )
+        );
+
+        txtResultado.append(
+                "Incompatibilidad: "
+                        + persona1.getNombre()
+                        + " <-> "
+                        + persona2.getNombre()
                         + "\n"
         );
     }
